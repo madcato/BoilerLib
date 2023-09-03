@@ -1,0 +1,27 @@
+{
+  "configurations" : [
+    {
+      "id" : "E2B65B89-CC98-4384-BA77-9636EC3EC118",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "BoilerLibTests"
+      ],
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "BoilerLibTests",
+        "name" : "BoilerLibTests"
+      }
+    }
+  ],
+  "version" : 1
+}
