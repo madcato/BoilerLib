@@ -30,7 +30,7 @@ public class Client {
     ///               The response will be decoded to this format
     /// - param completion: this block will be called at the end of the processing, with the resul or the error
     ///
-    public func request<Response>(_ endpoint: Http.Endpoint<Response>,
+    public func request<Response, Body>(_ endpoint: Http.Endpoint<Response, Body>,
                            completion: @escaping (Http.Result<Response>) -> Void) {
         guard dataTask == nil else {
             fatalError("Trying to launch a data task before finising previous.")
@@ -83,10 +83,7 @@ public class Client {
     ///               The response will be decoded to this format
     /// - param completion: this block will be called at the end of the processing, with the resul or the error
     ///
-    public func request<Response>(_ endpoint: Http.Endpoint<Response>) async throws -> Response {
-        guard endpoint.method == .get else {
-            fatalError("This method only handle GET")
-        }
+    public func request<Response: Decodable, Body: Encodable>(_ endpoint: Http.Endpoint<Response, Body>) async throws -> Response {
         let url = url(path: endpoint.path)
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         components?.queryItems = endpoint.parameters?.map { pair in
@@ -95,7 +92,9 @@ public class Client {
         if let finalQuery = components?.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B") {
             components?.percentEncodedQuery = finalQuery
         }
-        let urlRequest = URLRequest(url: components?.url ?? url)
+        var urlRequest = URLRequest(url: components?.url ?? url)
+        urlRequest.httpMethod = endpoint.method.rawValue
+        urlRequest.httpBody = try JSONEncoder().encode(endpoint.body)
         let (data, response) = try await session.data(for: urlRequest)
         print("--------------")
         print("\(response)")

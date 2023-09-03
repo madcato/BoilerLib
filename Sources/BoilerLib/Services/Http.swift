@@ -20,12 +20,12 @@ public enum Result<Response> {
     case error(Int, String)
 }
 
-public enum Method {
-    case get
-    case post
-    case put
-    case patch
-    case delete
+public enum Method: String {
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case patch = "PATCH"
+    case delete = "DELETE"
 }
 
 enum Error: Swift.Error {
@@ -37,19 +37,22 @@ enum Error: Swift.Error {
 public typealias Parameters = [String: Any]
 public typealias Path = String
 
-public final class Endpoint<Response> {
+public final class Endpoint<Response, Body> {
     let method: Method
     let path: Path
     let parameters: Parameters?
+    let body: Body?
     let decode: (Data) throws -> Response
 
     public init(method: Method,
          path: Path,
          parameters: Parameters? = nil,
+         body: Body? = nil,
          decode: @escaping (Data) throws -> Response) {
         self.method = method
         self.path = path
         self.parameters = parameters
+        self.body = body
         self.decode = decode
     }
 }
@@ -81,11 +84,12 @@ public final class Endpoint<Response> {
 
 // MARK: - Endpoint extensions
 
-public extension Http.Endpoint where Response: Swift.Decodable {
+public extension Http.Endpoint where Response: Swift.Decodable, Body: Swift.Encodable {
     convenience init(method: Http.Method,
                      path: Http.Path,
-                     parameters: Http.Parameters? = nil) {
-        self.init(method: method, path: path, parameters: parameters) {
+                     parameters: Http.Parameters? = nil,
+                     body: Body?) {
+        self.init(method: method, path: path, parameters: parameters, body: body) {
             let decoder = JSONDecoder()
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = Http.Constant.railsDefaultDateFormat
@@ -95,13 +99,15 @@ public extension Http.Endpoint where Response: Swift.Decodable {
     }
 }
 
-public extension Http.Endpoint where Response == Void {
+public extension Http.Endpoint where Response == Void, Body: Encodable {
     convenience init(method: Http.Method,
                      path: Http.Path,
-                     parameters: Http.Parameters? = nil) {
+                     parameters: Http.Parameters? = nil,
+                     body: Body?) {
         self.init(
             method: method,
             path: path,
-            parameters: parameters) { _ in () }
+            parameters: parameters,
+            body: body) { _ in () }
     }
 }
