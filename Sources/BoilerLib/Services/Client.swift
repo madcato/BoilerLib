@@ -25,7 +25,7 @@ public class Client {
         self.session = URLSession(configuration: configuration)
     }
 
-    /// request data. This is a GET HTTPrequest
+    /// **DEPRECATED** request data. This is a GET HTTPrequest
     /// - param endpoint: url of the endpoint and the type of the response.
     ///               The response will be decoded to this format
     /// - param completion: this block will be called at the end of the processing, with the resul or the error
@@ -78,7 +78,7 @@ public class Client {
         dataTask?.resume()
     }
 
-    /// request data. This is a GET HTTPrequest (async/await)
+    /// request data. This is a HTTPrequest (async/await)
     /// - param endpoint: url of the endpoint and the type of the response.
     ///               The response will be decoded to this format
     /// - param completion: this block will be called at the end of the processing, with the resul or the error
@@ -101,13 +101,23 @@ public class Client {
         print("--------------")
         print("\(String(data: data, encoding: .utf8) ?? "Invalid Data string encoding")")
         print("--------------")
-        if let response = response as? HTTPURLResponse,
-           response.statusCode == 200 {
-            let responseData = try endpoint.decode(data)
-            return responseData
+        if let response = response as? HTTPURLResponse {
+            if endpoint.validStatusCodes.contains(response.statusCode) {
+                let responseData = try endpoint.decode(data)
+                return responseData
+            } else if endpoint.informationalStatusCodes.contains(response.statusCode) {
+                throw Http.Error.redirection(code: response.statusCode, message: String(data: data, encoding: .utf16) ?? "Failed decode informational message")
+            } else if endpoint.redirectionStatusCodes.contains(response.statusCode) {
+                throw Http.Error.redirection(code: response.statusCode, message: String(data: data, encoding: .utf16) ?? "Failed decode redirection message")
+            } else if endpoint.clientErrorStatusCodes.contains(response.statusCode) {
+                throw Http.Error.client(code: response.statusCode, message: String(data: data, encoding: .utf16) ?? "Failed decode client message")
+            } else if endpoint.serverErrorStatusCodes.contains(response.statusCode) {
+                throw Http.Error.server(code: response.statusCode, message: String(data: data, encoding: .utf16) ?? "Failed decode server message")
+            }
         } else {
             throw Http.Error.invalidResponse
         }
+        throw Http.Error.invalidResponse
     }
 
     private func url(path: Http.Path) -> URL {

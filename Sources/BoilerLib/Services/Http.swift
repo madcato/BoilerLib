@@ -30,6 +30,10 @@ public enum Method: String {
 
 enum Error: Swift.Error {
     case invalidResponse
+    case information(code: Int, message: String)
+    case redirection(code: Int, message: String)
+    case client(code: Int, message: String)
+    case server(code: Int, message: String)
 }
 
 // MARK: - Http Endpoint
@@ -43,6 +47,11 @@ public final class Endpoint<Response, Body> {
     let parameters: Parameters?
     let body: Body?
     let decode: (Data) throws -> Response
+    let informationalStatusCodes = 100...199
+    let validStatusCodes = 200...299
+    let redirectionStatusCodes = 300...399
+    let clientErrorStatusCodes = 400...499
+    let serverErrorStatusCodes = 500...599
 
     public init(method: Method,
          path: Path,
