@@ -37,9 +37,8 @@ var b = a + 1
 ~~This was mistaken text~~
 
 """
-        let count = MarkdownParser.parse(string: markdown).length
+        let str = MarkdownParser.parse(string: markdown)
+        let count = str.length
         XCTAssertNotEqual(count, 0)
     }
-
-
 }
