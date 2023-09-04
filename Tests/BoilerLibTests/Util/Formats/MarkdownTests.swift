@@ -45,7 +45,8 @@ var b = a + 1
 ~~This was mistaken text~~
 
 """
-        print(MarkdownParser.parse(string: markdown))
+        let count = MarkdownParser.parse(string: markdown).length
+        XCTAssertNotEqual(count, 0)
     }
 
 //    func testPerformanceExample() throws {

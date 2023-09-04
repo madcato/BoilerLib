@@ -34,7 +34,7 @@ public class MarkdownParser {
     public static func parse(string: String) -> NSMutableAttributedString {
       let document = Markdown.Document(parsing: string, source: nil, options: ParseOptions(arrayLiteral: ParseOptions.parseBlockDirectives))
 #if DEBUG
-        print(document.debugDescription())
+//        print(document.debugDescription())
 #endif
       let leading = leadingCopy()
       leading.append(traverseChilds(doc: document))
