@@ -54,10 +54,10 @@ public final class Endpoint<Response, Body> {
     let serverErrorStatusCodes = 500...599
 
     public init(method: Method,
-         path: Path,
-         parameters: Parameters? = nil,
-         body: Body? = nil,
-         decode: @escaping (Data) throws -> Response) {
+                path: Path,
+                parameters: Parameters? = nil,
+                body: Body? = nil,
+                decode: @escaping (Data) throws -> Response) {
         self.method = method
         self.path = path
         self.parameters = parameters

@@ -14,7 +14,8 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.2.0")
+        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.2.0"),
+        .package(url: "https://github.com/realm/SwiftLint.git", branch: "main")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,9 +24,11 @@ let package = Package(
             name: "BoilerLib",
             dependencies: [
                 .product(name: "Markdown", package: "swift-markdown")
-            ]),
+            ],
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]),
         .testTarget(
             name: "BoilerLibTests",
-            dependencies: ["BoilerLib"]),
+            dependencies: ["BoilerLib"],
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]),
     ]
 )

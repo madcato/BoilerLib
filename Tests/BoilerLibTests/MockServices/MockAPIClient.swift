@@ -19,7 +19,8 @@ class MockAPIClient: Http.Client {
         super.init(baseURL: "http://www.server.com", basePath: "/path")
     }
 
-    override func request<Response, Body>(_ endpoint: Http.Endpoint<Response, Body>, completion: @escaping (Http.Result<Response>) -> Void) {
+    override func request<Response, Body>
+    (_ endpoint: Http.Endpoint<Response, Body>, completion: @escaping (Http.Result<Response>) -> Void) {
         guard let object = objectToReturn as? Http.Result<Response> else {
             fatalError("Need to set 'objectToReturn' value before calling this method")
         }

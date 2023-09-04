@@ -31,7 +31,7 @@ public class Client {
     /// - param completion: this block will be called at the end of the processing, with the resul or the error
     ///
     public func request<Response, Body>(_ endpoint: Http.Endpoint<Response, Body>,
-                           completion: @escaping (Http.Result<Response>) -> Void) {
+                                        completion: @escaping (Http.Result<Response>) -> Void) {
         guard dataTask == nil else {
             fatalError("Trying to launch a data task before finising previous.")
         }
@@ -83,7 +83,8 @@ public class Client {
     ///               The response will be decoded to this format
     /// - param completion: this block will be called at the end of the processing, with the resul or the error
     ///
-    public func request<Response: Decodable, Body: Encodable>(_ endpoint: Http.Endpoint<Response, Body>) async throws -> Response {
+    public func request<Response: Decodable, Body: Encodable>
+    (_ endpoint: Http.Endpoint<Response, Body>) async throws -> Response {
         let url = url(path: endpoint.path)
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         components?.queryItems = endpoint.parameters?.map { pair in
@@ -106,13 +107,24 @@ public class Client {
                 let responseData = try endpoint.decode(data)
                 return responseData
             } else if endpoint.informationalStatusCodes.contains(response.statusCode) {
-                throw Http.Error.redirection(code: response.statusCode, message: String(data: data, encoding: .utf16) ?? "Failed decode informational message")
+                throw Http.Error.redirection(code: response.statusCode,
+                                             message: String(data: data, encoding: .utf16) ??
+                                             "Failed decode informational message")
             } else if endpoint.redirectionStatusCodes.contains(response.statusCode) {
-                throw Http.Error.redirection(code: response.statusCode, message: String(data: data, encoding: .utf16) ?? "Failed decode redirection message")
+                throw Http.Error.redirection(code: response.statusCode,
+                                             message: String(data: data,
+                                                             encoding: .utf16) ??
+                                             "Failed decode redirection message")
             } else if endpoint.clientErrorStatusCodes.contains(response.statusCode) {
-                throw Http.Error.client(code: response.statusCode, message: String(data: data, encoding: .utf16) ?? "Failed decode client message")
+                throw Http.Error.client(code: response.statusCode,
+                                        message: String(data: data,
+                                                        encoding: .utf16) ??
+                                        "Failed decode client message")
             } else if endpoint.serverErrorStatusCodes.contains(response.statusCode) {
-                throw Http.Error.server(code: response.statusCode, message: String(data: data, encoding: .utf16) ?? "Failed decode server message")
+                throw Http.Error.server(code: response.statusCode,
+                                        message: String(data: data,
+                                                        encoding: .utf16) ??
+                                        "Failed decode server message")
             }
         } else {
             throw Http.Error.invalidResponse
