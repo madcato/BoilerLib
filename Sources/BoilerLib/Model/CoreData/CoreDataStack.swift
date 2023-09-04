@@ -25,7 +25,7 @@ public class CoreDataStack: NSObject, ObservableObject {
         self.managedObjectContext.automaticallyMergesChangesFromParent = true
     }
 
-    public init(backgroundWithMaster database: CoreDataStack) {
+    public init(backgroundWithMain database: CoreDataStack) {
         assert(Thread.current.isMainThread == false) // Create this variable from a background thread
         self.persistentContainer = database.persistentContainer
         self.managedObjectContext = database.persistentContainer.newBackgroundContext()
@@ -194,8 +194,8 @@ public class CoreDataStack: NSObject, ObservableObject {
     }
 
     public func getObjects(ofType entityName: String,
-                    _ sortBy: SortBy? = nil,
-                    _ wherePredicate: Where? = nil) -> [Any] {
+                           _ sortBy: SortBy? = nil,
+                           _ wherePredicate: Where? = nil) -> [Any] {
         let fetchRequest = NSFetchRequest<NSManagedObject>()
         let entity = NSEntityDescription.entity(forEntityName: entityName, in: self.managedObjectContext)
         assert(entity != nil)
@@ -219,9 +219,9 @@ public class CoreDataStack: NSObject, ObservableObject {
     }
 
     public func createFetchedResultsController<T: NSManagedObject>(_ entityName: String,
-                                                            _ sortBy: SortBy? = nil,
-                                                            _ wherePredicate: Where? = nil,
-                                                            sectionNameKeyPath: String? = nil) ->
+                                                                   _ sortBy: SortBy? = nil,
+                                                                   _ wherePredicate: Where? = nil,
+                                                                   sectionNameKeyPath: String? = nil) ->
         NSFetchedResultsController<T> {
             let fetchRequest = NSFetchRequest<T>()
             let entity = NSEntityDescription.entity(forEntityName: entityName, in: self.managedObjectContext)

@@ -9,13 +9,10 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false
+
   },
   "testTargets" : [
     {
-      "skippedTests" : [
-        "BoilerLibTests"
-      ],
       "target" : {
         "containerPath" : "container:",
         "identifier" : "BoilerLibTests",
