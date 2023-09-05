@@ -38,6 +38,9 @@ var b = a + 1
 
 """
         let str = MarkdownParser.parse(string: markdown)
+        print("------")
+        print(str)
+        print("------")
         let count = str.length
         XCTAssertNotEqual(count, 0)
     }
