@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIViewController {
+public extension UIViewController {
     func showAlert(_ message: String, title: String? = nil, onFinish: @escaping () -> Void = {}) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("OK",
@@ -35,5 +35,18 @@ extension UIViewController {
             .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
             .first { $0.isKeyWindow }
         return keyWindow?.rootViewController
+    }
+
+    func showTemporalAlert(_ message: String,
+                           title: String? = nil,
+                           seconds: Double = 0.3,
+                           onFinish: @escaping () -> Void = {}) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        self.present(alert, animated: true) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+                alert.dismiss(animated: true)
+                onFinish()
+            }
+        }
     }
 }
