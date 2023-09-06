@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum System {
+public enum System {
     // When the mobile detects something near the display, turn off it
     static func enableProximitySensor() {
         UIDevice.current.isProximityMonitoringEnabled = true
@@ -54,19 +54,19 @@ enum System {
         view.setNeedsDisplay()
     }
 
-    static func existObjectInConfiguration(_ objectName: String) -> Bool {
+    public static func existObjectInConfiguration(_ objectName: String) -> Bool {
         guard UserDefaults.standard.object(forKey: objectName) != nil else {
             return false
         }
         return true
     }
 
-    static func createObjectInConfiguration(_ object: Any?, forKey objectName: String) {
+    public static func createObjectInConfiguration(_ object: Any?, forKey objectName: String) {
         UserDefaults.standard.set(object, forKey: objectName)
         UserDefaults.standard.synchronize()
     }
 
-    static func loadFromConfig(_ objectName: String) -> Any? {
+    public static func loadFromConfig(_ objectName: String) -> Any? {
         UserDefaults.standard.object(forKey: objectName)
     }
 

@@ -65,7 +65,7 @@ public class MarkdownParser {
   // swiftlint:disable:next cyclomatic_complexity function_body_length
   private static func traverseChilds(doc: Markup, style: Style) -> NSMutableAttributedString {
     let partialResult = NSMutableAttributedString(string: "")
-      var internalStyle = Style(copy: style)
+    var internalStyle = Style(copy: style)
     doc.children.forEach { child in
       switch child.self {
       case let block as CodeBlock:
@@ -146,7 +146,7 @@ public class MarkdownParser {
           internalStyle = Style(copy: style)
         internalStyle.strikethrough = true
       case is Strong:
-          internalStyle = Style(copy: style)
+        internalStyle = Style(copy: style)
         internalStyle.strong = true
       default:
         fatalError("Unknown markup type \(child)")
@@ -166,6 +166,12 @@ public class MarkdownParser {
       case is CodeBlock:
           internalStyle.codeBlock = false
           partialResult.append(NSAttributedString(string: "\n"))
+      case is Strong:
+          internalStyle.strong = false
+      case is Emphasis:
+          internalStyle.emphasis = false
+      case is Strikethrough:
+          internalStyle.strikethrough = false
       default:
         break
       }
