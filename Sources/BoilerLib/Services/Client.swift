@@ -107,7 +107,7 @@ public class Client {
                 let responseData = try endpoint.decode(data)
                 return responseData
             } else if endpoint.informationalStatusCodes.contains(response.statusCode) {
-                throw Http.Error.redirection(code: response.statusCode,
+                throw Http.Error.information(code: response.statusCode,
                                              message: String(data: data, encoding: .utf16) ??
                                              "Failed decode informational message")
             } else if endpoint.redirectionStatusCodes.contains(response.statusCode) {

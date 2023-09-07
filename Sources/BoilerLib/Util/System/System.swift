@@ -94,33 +94,52 @@ public enum System {
         UIScreen.main.brightness = bright
     }
 
-    static func registerUserDefaults() {
-        guard let settingsBundle = Bundle.main.path(forResource: "Settings",
-                                                    ofType: "bundle") else {
-            NSLog("Could not find Settings.bundle")
-            return
-        }
-        guard let settings = NSDictionary(contentsOfFile: settingsBundle.appending("Root.plist")) else {
-            NSLog("Could not load Root.plist")
-            return
-        }
-        if let preferences = settings["PreferenceSpecifiers"] as? NSArray {
-            let defaultsToRegister: [String: Any] = collectProperties(preferences)
-            UserDefaults.standard.register(defaults: defaultsToRegister)
+    public static func registerUserDefaults() {
+        if let path = Bundle.main.path(forResource: "Root", ofType: "plist", inDirectory: "Settings.bundle") {
+            if let settings = NSDictionary(contentsOfFile: path),
+               let preferences = settings["PreferenceSpecifiers"] as? [NSDictionary] {
+
+                var defaultsToRegister = [String: AnyObject]()
+
+                for prefSpecification in preferences {
+                    if let key = prefSpecification["Key"] as? String,
+                       let value = prefSpecification["DefaultValue"] {
+                        defaultsToRegister[key] = value as AnyObject
+                    }
+                }
+
+                UserDefaults.standard.register(defaults: defaultsToRegister)
+            }
         }
     }
 
-    static func collectProperties(_ preferences: NSArray) -> [String: Any] {
-    var defaultsToRegister: [String: Any] = [:]
-        for case let prefSpecification as NSDictionary in preferences {
-            if let key = prefSpecification["Key"] as? String {
-                if let object = UserDefaults.standard.object(forKey: key) {
-                    defaultsToRegister[key] = object
-                }
-            }
-        }
-        return defaultsToRegister
-    }
+//    public static func registerUserDefaults() {
+//        guard let settingsBundle = Bundle.main.path(forResource: "Settings",
+//                                                    ofType: "bundle") else {
+//            NSLog("Could not find Settings.bundle")
+//            return
+//        }
+//        guard let settings = NSDictionary(contentsOfFile: settingsBundle.appending("Root.plist")) else {
+//            NSLog("Could not load Root.plist")
+//            return
+//        }
+//        if let preferences = settings["PreferenceSpecifiers"] as? NSArray {
+//            let defaultsToRegister: [String: Any] = collectProperties(preferences)
+//            UserDefaults.standard.register(defaults: defaultsToRegister)
+//        }
+//    }
+//
+//    static func collectProperties(_ preferences: NSArray) -> [String: Any] {
+//    var defaultsToRegister: [String: Any] = [:]
+//        for case let prefSpecification as NSDictionary in preferences {
+//            if let key = prefSpecification["Key"] as? String {
+//                if let object = UserDefaults.standard.object(forKey: key) {
+//                    defaultsToRegister[key] = object
+//                }
+//            }
+//        }
+//        return defaultsToRegister
+//    }
 
     static func generateUUID() -> String {
         let uuid = NSUUID()

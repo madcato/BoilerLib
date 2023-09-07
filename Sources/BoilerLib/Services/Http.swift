@@ -28,7 +28,7 @@ public enum Method: String {
     case delete = "DELETE"
 }
 
-enum Error: Swift.Error {
+public enum Error: Swift.Error {
     case invalidResponse
     case information(code: Int, message: String)
     case redirection(code: Int, message: String)
