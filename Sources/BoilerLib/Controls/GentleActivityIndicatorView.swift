@@ -17,19 +17,19 @@ import UIKit
 
  This class was inspired by https://github.com/Alamofire/AlamofireNetworkActivityIndicator
 */
-class GentleActivityIndicatorView: UIActivityIndicatorView {
+public class GentleActivityIndicatorView: UIActivityIndicatorView {
     var startDelay: TimeInterval = 0.2
     var completionMinInterval: TimeInterval = 0.8
 
     private var stopAnimatingCalled: Bool = false
     private var completionMinIntervalDone: Bool = false
 
-    override func startAnimating() {
+    public override func startAnimating() {
         stopAnimatingCalled = false
         perform(#selector(startAnimatingCalled), with: nil, afterDelay: startDelay)
     }
 
-    override func stopAnimating() {
+    public override func stopAnimating() {
         stopAnimatingCalled = true
         checkDoneState()
     }

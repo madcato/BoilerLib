@@ -8,11 +8,28 @@
 
 import UIKit
 
-class BlinkingImage: UIImageView {
-  override func awakeFromNib() {
-      super.awakeFromNib()
-    UIView.animate(withDuration: 1.2, delay: 0.0, options: [.autoreverse, .repeat, .curveEaseInOut]) {
+public class BlinkingImage: UIImageView {
+    public override func awakeFromNib() {
+    addNotifications()
+    animate()
+  }
+
+  private func addNotifications() {
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(applicationWillEnterForeground(_:)),
+                                           name: UIApplication.willEnterForegroundNotification, object: nil)
+  }
+
+  @objc
+  private func applicationWillEnterForeground(_ notification: NSNotification) {
+    animate()
+  }
+
+  private func animate() {
+    self.layer.removeAllAnimations()
+    self.alpha = 1.0
+    UIView.animate(withDuration: 1.2, delay: 0.0, options: [.autoreverse, .repeat, .curveEaseInOut], animations: {
       self.alpha = 0.10
-    }
+    })
   }
 }
